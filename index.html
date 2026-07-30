@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Reels</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .app {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        }
+        h1 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+        .sub { color: #999; font-size: 14px; text-align: center; margin-bottom: 24px; }
+
+        .upload-btn {
+            width: 100%;
+            padding: 40px 20px;
+            border: 2px dashed #ddd;
+            border-radius: 16px;
+            background: #fafafa;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .upload-btn:hover { border-color: #0095f6; background: #f0f8ff; }
+        .upload-btn .icon { font-size: 48px; display: block; margin-bottom: 8px; }
+        .upload-btn .text { color: #555; font-size: 15px; }
+        .upload-btn .text strong { color: #0095f6; }
+        input[type="file"] { display: none; }
+
+        .preview-wrapper {
+            display: none;
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .preview-wrapper.active { display: block; }
+        .preview-wrapper .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .preview-wrapper .ratio {
+            font-size: 10px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .preview-wrapper .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .preview-wrapper .canvas-wrapper canvas {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+            aspect-ratio: 9 / 16;
+        }
+
+        .controls {
+            display: none;
+            margin-bottom: 16px;
+        }
+        .controls.active { display: block; }
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            justify-content: center;
+        }
+        .control-row label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        .control-row .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        .control-row .btn-group button {
+            padding: 6px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .control-row .btn-group button:hover {
+            border-color: #0095f6;
+        }
+        .control-row .btn-group button.active {
+            border-color: #0095f6;
+            background: #f0f8ff;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: #0095f6;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: none;
+        }
+        .save-btn:hover { background: #0081d6; }
+        .save-btn.active { display: block; }
+
+        .info {
+            margin-top: 16px;
+            font-size: 12px;
+            color: #bbb;
+            text-align: center;
+        }
+        .info strong {
+            color: #666;
+        }
+        .info .highlight {
+            color: #0095f6;
+            font-weight: 600;
+        }
+        .info .gray {
+            color: #999;
+        }
+        .info .work {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <h1>📸 Instagram Reels</h1>
+    <p class="sub">Авто-обрезание до 3:4 + белый фон</p>
+
+    <div class="upload-btn" id="uploadBtn">
+        <span class="icon">🖼️</span>
+        <span class="text"><strong>Нажми</strong> или перетащи фото</span>
+        <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="preview-wrapper" id="previewWrapper">
+        <div class="label">📹 Reels 9:16</div>
+        <div class="ratio"><span class="work">Зелёная область</span> — 3:4 (обрезано от центра)</div>
+        <div class="canvas-wrapper">
+            <canvas id="reelsCanvas"></canvas>
+        </div>
+    </div>
+
+    <div class="controls" id="controls">
+        <div class="control-row">
+            <label>Отступ:</label>
+            <div class="btn-group">
+                <button data-padding="0" class="active">0%</button>
+                <button data-padding="5">5%</button>
+                <button data-padding="10">10%</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="save-btn" id="saveBtn">💾 Сохранить Reels (9:16)</button>
+
+    <div class="info">
+        <span class="gray">Серая область</span> — фиксирована, не меняется<br>
+        <span class="work">Зелёная область</span> — 3:4, фото центрируется с отступом
+    </div>
+</div>
+
+<script>
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    const previewWrapper = document.getElementById('previewWrapper');
+    const controls = document.getElementById('controls');
+    const reelsCanvas = document.getElementById('reelsCanvas');
+    const saveBtn = document.getElementById('saveBtn');
+    const paddingBtns = document.querySelectorAll('.btn-group button');
+
+    let currentImage = null;
+    let currentPadding = 0;
+    let workAreaHeight = 0;
+
+    reelsCanvas.width = 1080;
+    reelsCanvas.height = 1920;
+
+    // Функция обрезки до 3:4 от центра
+    function cropTo34(img) {
+        const imgRatio = img.width / img.height;
+        const targetRatio = 3 / 4; // 0.75
+
+        let sx, sy, sWidth, sHeight;
+
+        if (imgRatio > targetRatio) {
+            // Слишком широкое — обрезаем по бокам
+            sHeight = img.height;
+            sWidth = img.height * targetRatio;
+            sx = (img.width - sWidth) / 2;
+            sy = 0;
+        } else {
+            // Слишком высокое или ровно 3:4 — обрезаем по высоте
+            sWidth = img.width;
+            sHeight = img.width / targetRatio;
+            sx = 0;
+            sy = (img.height - sHeight) / 2;
+        }
+
+        return { sx, sy, sWidth, sHeight };
+    }
+
+    function loadImage(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                currentImage = img;
+                
+                // Вычисляем высоту рабочей области (3:4 от ширины)
+                const w = reelsCanvas.width;
+                workAreaHeight = w * (4 / 3); // 1080 * 4/3 = 1440
+                
+                renderAll();
+                previewWrapper.classList.add('active');
+                controls.classList.add('active');
+                saveBtn.classList.add('active');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function renderReels() {
+        if (!currentImage) return;
+
+        const w = reelsCanvas.width;
+        const h = reelsCanvas.height;
+        const ctx = reelsCanvas.getContext('2d');
+
+        ctx.clearRect(0, 0, w, h);
+
+        const paddingPercent = currentPadding / 100;
+        
+        // Обрезаем до 3:4 от центра
+        const crop = cropTo34(currentImage);
+        
+        // Размер фото внутри рабочей области с отступом
+        const photoWidth = w * (1 - paddingPercent * 2);
+        const photoHeight = photoWidth * (4 / 3); // 3:4
+
+        // Центрируем фото в рабочей области
+        const x = (w - photoWidth) / 2;
+        const y = (workAreaHeight - photoHeight) / 2;
+
+        // 1. Рисуем серую фиксированную область (нижняя часть)
+        ctx.fillStyle = '#555555';
+        ctx.fillRect(0, workAreaHeight, w, h - workAreaHeight);
+
+        // 2. Рисуем зелёную рабочую область (фон)
+        ctx.fillStyle = '#2d7d3a';
+        ctx.fillRect(0, 0, w, workAreaHeight);
+
+        // 3. Рисуем белый фон внутри рабочей области (там где отступ)
+        ctx.fillStyle = '#ffffff';
+        
+        if (y > 0) {
+            ctx.fillRect(0, 0, w, y);
+        }
+        if (x > 0) {
+            ctx.fillRect(0, y, x, photoHeight);
+        }
+        if (x + photoWidth < w) {
+            ctx.fillRect(x + photoWidth, y, w - x - photoWidth, photoHeight);
+        }
+        if (y + photoHeight < workAreaHeight) {
+            ctx.fillRect(0, y + photoHeight, w, workAreaHeight - y - photoHeight);
+        }
+
+        // 4. Рисуем обрезанное фото (3:4) поверх белого фона
+        ctx.drawImage(
+            currentImage,
+            crop.sx, crop.sy, crop.sWidth, crop.sHeight,  // источник (обрезанный кадр)
+            x, y, photoWidth, photoHeight                 // назначение
+        );
+
+        // 5. Рисуем разделительную линию
+        ctx.strokeStyle = '#888888';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(0, workAreaHeight);
+        ctx.lineTo(w, workAreaHeight);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 6. Подписи
+        ctx.fillStyle = '#999999';
+        ctx.font = `${w * 0.035}px system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('⬇ фиксировано', w/2, workAreaHeight + (h - workAreaHeight) / 2);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `${w * 0.03}px system-ui, sans-serif`;
+        ctx.fillText('3:4 (обрезано от центра)', w/2, workAreaHeight / 2);
+    }
+
+    function renderAll() {
+        renderReels();
+    }
+
+    function saveReels() {
+        if (!currentImage) return;
+
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = reelsCanvas.width;
+        tempCanvas.height = reelsCanvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        const w = tempCanvas.width;
+        const h = tempCanvas.height;
+
+        // Весь canvas заливаем белым
+        tempCtx.fillStyle = '#ffffff';
+        tempCtx.fillRect(0, 0, w, h);
+
+        const paddingPercent = currentPadding / 100;
+        const crop = cropTo34(currentImage);
+        
+        const photoWidth = w * (1 - paddingPercent * 2);
+        const photoHeight = photoWidth * (4 / 3);
+        const x = (w - photoWidth) / 2;
+        const y = (workAreaHeight - photoHeight) / 2;
+
+        tempCtx.drawImage(
+            currentImage,
+            crop.sx, crop.sy, crop.sWidth, crop.sHeight,
+            x, y, photoWidth, photoHeight
+        );
+
+        const link = document.createElement('a');
+        link.download = 'instagram-reels-9x16.png';
+        link.href = tempCanvas.toDataURL('image/png');
+        link.click();
+    }
+
+    paddingBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            paddingBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentPadding = parseInt(btn.dataset.padding);
+            renderAll();
+        });
+    });
+
+    uploadBtn.addEventListener('click', () => fileInput.click());
+
+    uploadBtn.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadBtn.style.borderColor = '#0095f6';
+        uploadBtn.style.background = '#f0f8ff';
+    });
+    uploadBtn.addEventListener('dragleave', () => {
+        uploadBtn.style.borderColor = '#ddd';
+        uploadBtn.style.background = '#fafafa';
+    });
+    uploadBtn.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadBtn.style.borderColor = '#ddd';
+        uploadBtn.style.background = '#fafafa';
+        if (e.dataTransfer.files.length) {
+            loadImage(e.dataTransfer.files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+            loadImage(e.target.files[0]);
+        }
+        e.target.value = '';
+    });
+
+    saveBtn.addEventListener('click', saveReels);
+</script>
+
+</body>
+</html>
