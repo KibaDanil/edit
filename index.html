@@ -1,431 +1,1084 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- ========== FAVICON (иконки для всех устройств) ========== -->
-<!-- Стандартный favicon для вкладки браузера -->
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-
-<!-- Иконка для iPhone / iPad (когда добавляют на экран домой) -->
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-
-<!-- Иконки для Android / Chrome (при установке приложения) -->
-<link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
-
-<!-- Цвет темы для браузера (верхняя панель в Chrome на Android) -->
-<meta name="theme-color" content="#2c7da0">
-
-<!-- Манифест для PWA (чтобы работала установка на телефон) -->
-<link rel="manifest" href="site.webmanifest">
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Reels</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: system-ui, sans-serif;
-            background: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .app {
-            max-width: 400px;
-            width: 100%;
-            background: white;
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-        }
-        h1 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 4px; }
-        .sub { color: #999; font-size: 14px; text-align: center; margin-bottom: 24px; }
-
-        .upload-btn {
-            width: 100%;
-            padding: 40px 20px;
-            border: 2px dashed #ddd;
-            border-radius: 16px;
-            background: #fafafa;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .upload-btn:hover { border-color: #0095f6; background: #f0f8ff; }
-        .upload-btn .icon { font-size: 48px; display: block; margin-bottom: 8px; }
-        .upload-btn .text { color: #555; font-size: 15px; }
-        .upload-btn .text strong { color: #0095f6; }
-        input[type="file"] { display: none; }
-
-        .preview-wrapper {
-            display: none;
-            margin-bottom: 20px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-        }
-        .preview-wrapper.active { display: block; }
-        .preview-wrapper .label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .preview-wrapper .ratio {
-            font-size: 10px;
-            color: #999;
-            margin-bottom: 8px;
-        }
-        .preview-wrapper .canvas-wrapper {
-            position: relative;
-            width: 100%;
-            background: #1a1a1a;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .preview-wrapper .canvas-wrapper canvas {
-            width: 100%;
-            display: block;
-            border-radius: 8px;
-            aspect-ratio: 9 / 16;
-        }
-
-        .controls {
-            display: none;
-            margin-bottom: 16px;
-        }
-        .controls.active { display: block; }
-        .control-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-            justify-content: center;
-        }
-        .control-row label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-        }
-        .control-row .btn-group {
-            display: flex;
-            gap: 8px;
-        }
-        .control-row .btn-group button {
-            padding: 6px 20px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-        .control-row .btn-group button:hover {
-            border-color: #0095f6;
-        }
-        .control-row .btn-group button.active {
-            border-color: #0095f6;
-            background: #f0f8ff;
-        }
-
-        .save-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            background: #0095f6;
-            color: white;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: none;
-        }
-        .save-btn:hover { background: #0081d6; }
-        .save-btn.active { display: block; }
-
-        .info {
-            margin-top: 16px;
-            font-size: 12px;
-            color: #bbb;
-            text-align: center;
-        }
-        .info strong {
-            color: #666;
-        }
-        .info .highlight {
-            color: #0095f6;
-            font-weight: 600;
-        }
-        .info .gray {
-            color: #999;
-        }
-        .info .work {
-            color: #4CAF50;
-            font-weight: 600;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Технология разработки ПО — интерактивный курс</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh; padding: 20px; color: #2d3748;
+    -webkit-user-select: none; -ms-user-select: none; user-select: none;
+  }
+  .container { max-width: 820px; margin: 0 auto; }
+  .card {
+    background: white; border-radius: 16px; padding: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin-bottom: 20px;
+  }
+  h1 { font-size: 26px; margin-bottom: 8px; color: #1a202c; line-height: 1.3; }
+  h2 { font-size: 21px; margin-bottom: 14px; color: #2d3748; }
+  h3 { font-size: 17px; margin-bottom: 10px; color: #4a5568; }
+  .subtitle { color: #718096; margin-bottom: 22px; font-size: 15px; line-height: 1.6; }
+  .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.4s ease; }
+  .theory {
+    background: #f7fafc; border-left: 4px solid #667eea; padding: 20px;
+    border-radius: 8px; margin-bottom: 20px; line-height: 1.75; font-size: 15px;
+  }
+  .theory p { margin-bottom: 10px; }
+  .theory p:last-child { margin-bottom: 0; }
+  .theory ul, .theory ol { margin: 8px 0 10px 22px; }
+  .theory li { margin-bottom: 6px; }
+  .theory code {
+    background: #edf2f7; padding: 2px 6px; border-radius: 4px;
+    font-family: 'Courier New', monospace; color: #c53030; font-size: 14px;
+  }
+  .theory pre {
+    background: #1a202c; color: #e2e8f0; padding: 16px; border-radius: 8px;
+    overflow-x: auto; margin: 12px 0;
+    font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.55;
+  }
+  .theory pre code { background: none; color: inherit; padding: 0; }
+  .tag {
+    display: inline-block; background: #667eea; color: white;
+    padding: 4px 12px; border-radius: 20px; font-size: 11px;
+    font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.6px;
+  }
+  .tag.model { background: #38a169; }
+  .tag.web { background: #3182ce; }
+  .tag.db { background: #dd6b20; }
+  .tag.dev { background: #805ad5; }
+  input[type="text"] {
+    width: 100%; padding: 14px 16px; font-size: 16px;
+    border: 2px solid #e2e8f0; border-radius: 10px;
+    outline: none; transition: border-color 0.2s; font-family: inherit;
+    -webkit-user-select: text; user-select: text;
+  }
+  input[type="text"]:focus { border-color: #667eea; }
+  /* ====== ВАРИАНТЫ ВЫБОРА ====== */
+  .option {
+    display: block; padding: 14px 18px; border: 2px solid #e2e8f0;
+    border-radius: 10px; margin-bottom: 10px; cursor: pointer;
+    transition: all 0.2s; font-size: 15px; line-height: 1.5;
+  }
+  .option:hover { border-color: #667eea; background: #f7fafc; }
+  .option.selected { border-color: #667eea; background: #ebf4ff; }
+  .option.correct { border-color: #48bb78; background: #f0fff4; }
+  .option.wrong { border-color: #f56565; background: #fff5f5; }
+  .option.locked { cursor: default; }
+  .option.locked:hover { background: inherit; border-color: inherit; }
+  .option.locked.correct:hover { background: #f0fff4; border-color: #48bb78; }
+  .option.locked.wrong:hover { background: #fff5f5; border-color: #f56565; }
+  .option .check {
+    display: inline-block; width: 22px; height: 22px;
+    border: 2px solid #cbd5e0; border-radius: 5px;
+    margin-right: 10px; vertical-align: middle;
+    text-align: center; line-height: 18px; font-size: 14px;
+    color: transparent; transition: all 0.2s;
+  }
+  .option.selected .check { background: #667eea; border-color: #667eea; color: white; }
+  .option.correct .check { background: #48bb78; border-color: #48bb78; color: white; }
+  .option.wrong .check { background: #f56565; border-color: #f56565; color: white; }
+  /* ====== ПОРЯДОК ====== */
+  .order-pool, .order-chain {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
+    min-height: 50px; padding: 10px; border-radius: 10px;
+    background: #f7fafc; border: 2px dashed #e2e8f0;
+  }
+  .order-chain { background: #ebf4ff; border-color: #c3dafe; }
+  .order-chain:empty::before {
+    content: 'Кликайте элементы ниже в правильном порядке';
+    color: #a0aec0; font-size: 14px; padding: 10px;
+  }
+  .order-item {
+    padding: 10px 16px; background: white; border: 2px solid #cbd5e0;
+    border-radius: 8px; cursor: pointer; font-size: 14px;
+    transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+  }
+  .order-item:hover { border-color: #667eea; color: #667eea; }
+  .order-item.in-chain {
+    background: #667eea; color: white; border-color: #667eea;
+    cursor: default;
+  }
+  .order-item .num {
+    display: inline-block; width: 22px; height: 22px;
+    background: rgba(255,255,255,0.3); border-radius: 50%;
+    text-align: center; line-height: 22px; font-size: 12px; font-weight: 700;
+  }
+  .order-item.correct-chain { background: #48bb78; border-color: #48bb78; }
+  .order-item.wrong-chain { background: #f56565; border-color: #f56565; }
+  /* ====== СОПОСТАВЛЕНИЕ ====== */
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .match-grid { grid-template-columns: 1fr; } }
+  .match-col { display: flex; flex-direction: column; gap: 8px; }
+  .match-item {
+    padding: 12px 16px; background: white; border: 2px solid #cbd5e0;
+    border-radius: 10px; cursor: pointer; font-size: 14px;
+    transition: all 0.2s; line-height: 1.4;
+  }
+  .match-item:hover:not(.matched) { border-color: #667eea; }
+  .match-item.active { border-color: #667eea; background: #ebf4ff; box-shadow: 0 0 0 3px rgba(102,126,234,0.2); }
+  .match-item.matched { cursor: default; color: #4a5568; }
+  .match-item.correct-match { background: #f0fff4; border-color: #48bb78; }
+  .match-item.wrong-match { background: #fff5f5; border-color: #f56565; }
+  .match-item .pair-label {
+    display: inline-block; width: 22px; height: 22px;
+    background: #667eea; color: white; border-radius: 50%;
+    text-align: center; line-height: 22px; font-size: 12px;
+    font-weight: 700; margin-right: 8px;
+  }
+  .match-item.correct-match .pair-label { background: #48bb78; }
+  .match-item.wrong-match .pair-label { background: #f56565; }
+  /* ====== КНОПКИ ====== */
+  .btn {
+    padding: 14px 28px; font-size: 16px; font-weight: 600; border: none;
+    border-radius: 10px; cursor: pointer; transition: all 0.2s;
+    font-family: inherit;
+    background: linear-gradient(135deg, #667eea, #764ba2); color: white;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary { background: #e2e8f0; color: #4a5568; }
+  .btn-secondary:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+  .actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 22px; flex-wrap: wrap; }
+  .actions.space-between { justify-content: space-between; }
+  .feedback {
+    padding: 16px 18px; border-radius: 10px; margin-top: 16px;
+    font-size: 14.5px; line-height: 1.65; display: none;
+  }
+  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .feedback.success { background: #f0fff4; border-left: 4px solid #48bb78; color: #276749; }
+  .feedback.error { background: #fff5f5; border-left: 4px solid #f56565; color: #c53030; }
+  .feedback.partial { background: #fffaf0; border-left: 4px solid #ed8936; color: #975a16; }
+  .feedback .fb-title { font-weight: 700; margin-bottom: 6px; display: block; }
+  /* ====== РЕЗУЛЬТАТЫ ====== */
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin: 24px 0; }
+  .stat { background: #f7fafc; padding: 20px; border-radius: 12px; text-align: center; }
+  .stat-value { font-size: 32px; font-weight: 700; color: #667eea; }
+  .stat-label { font-size: 13px; color: #718096; margin-top: 4px; }
+  .review-item { padding: 16px 18px; border-radius: 10px; margin-bottom: 12px; background: #f7fafc; line-height: 1.6; }
+  .review-item.correct-item { border-left: 4px solid #48bb78; }
+  .review-item.wrong-item { border-left: 4px solid #f56565; }
+  .review-question { font-weight: 600; margin-bottom: 8px; font-size: 15px; }
+  .review-explain { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e0; font-size: 13.5px; color: #4a5568; font-style: italic; }
+  .hidden { display: none !important; }
+  .name-badge {
+    display: inline-block; background: #ebf4ff; color: #667eea;
+    padding: 6px 14px; border-radius: 20px; font-size: 14px;
+    font-weight: 600; margin-bottom: 16px;
+  }
+  .score-big { text-align: center; padding: 28px; }
+  .score-big .value {
+    font-size: 72px; font-weight: 800;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .score-big .label { font-size: 18px; color: #718096; margin-top: 8px; }
+  .module-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+  .module-counter { font-size: 13px; color: #a0aec0; font-weight: 600; }
+  .start-intro { background: #f7fafc; border-radius: 12px; padding: 20px; margin-bottom: 22px; line-height: 1.7; font-size: 15px; color: #4a5568; }
+  .start-intro ul { margin: 10px 0 0 22px; }
+  .start-intro li { margin-bottom: 6px; }
+  .step-label { display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #a0aec0; margin-bottom: 14px; }
+  /* кнопка "Назад" */
+  .btn-back {
+    background: transparent; color: #667eea; border: 2px solid #c3dafe;
+    padding: 12px 22px; font-size: 15px;
+  }
+  .btn-back:hover { background: #ebf4ff; box-shadow: none; transform: translateY(-1px); }
+</style>
 </head>
 <body>
-
-<div class="app">
-    <h1>📸 Instagram Reels</h1>
-    <p class="sub">Авто-обрезание до 3:4 + белый фон</p>
-
-    <div class="upload-btn" id="uploadBtn">
-        <span class="icon">🖼️</span>
-        <span class="text"><strong>Нажми</strong> или перетащи фото</span>
-        <input type="file" id="fileInput" accept="image/*">
-    </div>
-
-    <div class="preview-wrapper" id="previewWrapper">
-        <div class="label">📹 Reels 9:16</div>
-        <div class="ratio"><span class="work">Зелёная область</span> — 3:4 (обрезано от центра)</div>
-        <div class="canvas-wrapper">
-            <canvas id="reelsCanvas"></canvas>
-        </div>
-    </div>
-
-    <div class="controls" id="controls">
-        <div class="control-row">
-            <label>Отступ:</label>
-            <div class="btn-group">
-                <button data-padding="0" class="active">0%</button>
-                <button data-padding="5">5%</button>
-                <button data-padding="10">10%</button>
-            </div>
-        </div>
-    </div>
-
-    <button class="save-btn" id="saveBtn">💾 Сохранить Reels (9:16)</button>
-
-    <div class="info">
-        <span class="gray">Серая область</span> — фиксирована, не меняется<br>
-        <span class="work">Зелёная область</span> — 3:4, фото центрируется с отступом
-    </div>
-</div>
-
+<div class="container" id="app"></div>
 <script>
-    const uploadBtn = document.getElementById('uploadBtn');
-    const fileInput = document.getElementById('fileInput');
-    const previewWrapper = document.getElementById('previewWrapper');
-    const controls = document.getElementById('controls');
-    const reelsCanvas = document.getElementById('reelsCanvas');
-    const saveBtn = document.getElementById('saveBtn');
-    const paddingBtns = document.querySelectorAll('.btn-group button');
+const LESSONS = [
+  // ===== 1. ПОРЯДОК: этапы создания ПО (с подробным описанием) =====
+  {
+    tag: 'Разработка ПО', tagClass: 'dev',
+    theory: `<h3>Что такое программное обеспечение</h3>
+      <p><b>Программа</b> — это набор инструкций, которые компьютер выполняет, чтобы решить задачу пользователя. <b>Программное обеспечение (ПО)</b> — совокупность всех программ и данных.</p>
+      <p>Любая программа проходит путь от идеи до эксплуатации. Пропустить этап нельзя: если не протестировать — пользователи получат «сырой» продукт, если не спроектировать — код будет хаотичным.</p>
+      <h3>Этапы создания ПО (подробно)</h3>
+      <ol>
+        <li><b>Идея</b> — понимание, зачем нужна программа, какую проблему она решает и для кого создаётся. На этом этапе формулируется замысел: «нужен сервис для записи к врачу», «нужна программа для учёта оценок». Без чёткой идеи остальные этапы теряют смысл.</li>
+        <li><b>Анализ требований</b> — сбор и документирование того, что программа должна делать. Общаемся с заказчиком и пользователями, выясняем функции (что делать) и ограничения (скорость, безопасность, совместимость). Результат — список требований, по которому потом будут проверять готовый продукт.</li>
+        <li><b>Проектирование</b> — решение, как программа будет устроена внутри: архитектура, модули, структура данных, взаимодействие с базой данных, интерфейс. На этом этапе рисуются схемы и принимаются ключевые технические решения, чтобы разработка не превратилась в хаос.</li>
+        <li><b>Разработка (код)</b> — написание программного кода по проекту. Программисты реализуют функции, описанные в требованиях, и собирают программу из модулей. Это самый объёмный по времени этап.</li>
+        <li><b>Тестирование</b> — проверка, что программа работает правильно и соответствует требованиям. Ищутся ошибки (баги), проверяются граничные случаи, удобство и безопасность. Без этого этапа пользователи получат «сырой» продукт.</li>
+        <li><b>Эксплуатация</b> — передача программы пользователям, установка, обучение, поддержка и обновления. После запуска собираются отзывы и исправляются найденные проблемы. При необходимости цикл повторяется — выпускаются новые версии.</li>
+      </ol>
+      <p>Это и есть путь программы: <b>идея → анализ требований → проектирование → разработка → тестирование → эксплуатация</b>.</p>`,
+    type: 'order',
+    question: 'Расставь этапы создания программы по порядку. Кликайте элементы в правильной последовательности.',
+    items: ['Идея', 'Анализ требований', 'Проектирование', 'Разработка (код)', 'Тестирование', 'Эксплуатация'],
+    correctOrder: [0, 1, 2, 3, 4, 5],
+    explanation: 'Это классический путь: сначала понимаем, что нужно (идея, анализ), потом решаем, как это сделать (проектирование), пишем код (разработка), проверяем (тестирование) и только потом отдаём пользователям (эксплуатация).'
+  },
+  // ===== 2. ВЫБОР: Agile =====
+  {
+    tag: 'Разработка ПО', tagClass: 'dev',
+    theory: `<h3>Жизненный цикл ПО (SDLC)</h3>
+      <p><b>SDLC</b> (Software Development Life Cycle) — цикл жизни программы. Две главные модели:</p>
+      <ul>
+        <li><b>Водопадная</b> — этапы строго по порядку. Подходит, когда требования стабильны (госзаказ, драйверы).</li>
+        <li><b>Agile (гибкая)</b> — короткими итерациями, с постоянной обратной связью. Подходит, когда требования могут меняться (стартапы, новые сервисы).</li>
+      </ul>
+      <p><b>Итерация</b> — короткий цикл: сделали кусочек → показали → получили отзыв → улучшили.</p>`,
+    type: 'single',
+    question: 'Для какого проекта лучше подойдёт Agile?',
+    options: [
+      'Обновление банковской системы по государственному регламенту',
+      'Новый мобильный сервис, идея которого ещё проверяется',
+      'Драйвер для принтера'
+    ],
+    correct: 1,
+    explanation: 'Agile выбирают, когда требования могут меняться. В банковском госзаказе и драйверах требования зафиксированы заранее — там удобнее водопадная модель.'
+  },
+  // ===== 3. СОПОСТАВЛЕНИЕ: роли =====
+  {
+    tag: 'Разработка ПО', tagClass: 'dev',
+    theory: `<h3>Роли в команде разработки</h3>
+      <p>В команде у каждого своя зона ответственности:</p>
+      <ul>
+        <li><b>Аналитик</b> — переводит задачу с языка бизнеса на язык требований. Отвечает на вопрос «что должно быть».</li>
+        <li><b>Архитектор</b> — решает, как программа устроена внутри.</li>
+        <li><b>Разработчик</b> — пишет код.</li>
+        <li><b>Тестировщик</b> — проверяет, что всё работает по требованиям.</li>
+        <li><b>DevOps</b> — отвечает за запуск и эксплуатацию.</li>
+      </ul>
+      <p>Важно не путать «что» (аналитик) и «как» (архитектор и разработчик).</p>`,
+    type: 'match',
+    question: 'Сопоставь роль и то, чем она занимается. Кликните слева, затем справа, чтобы образовать пару.',
+    left: ['Аналитик', 'Архитектор', 'Разработчик', 'Тестировщик', 'DevOps'],
+    right: [
+      'Описывает требования: что должно быть',
+      'Решает, как программа устроена внутри',
+      'Пишет код',
+      'Проверяет, что всё работает по требованиям',
+      'Отвечает за запуск и эксплуатацию'
+    ],
+    explanation: 'Аналитик фиксирует «что», архитектор проектирует «как», разработчик реализует, тестировщик проверяет, DevOps запускает. Это разные роли, даже если иногда их совмещает один человек в маленькой команде.'
+  },
+  // ===== 4. МНОЖЕСТВЕННЫЙ: нефункциональные требования =====
+  {
+    tag: 'Разработка ПО', tagClass: 'dev',
+    theory: `<h3>Требования: функциональные и нефункциональные</h3>
+      <p><b>Функциональные требования</b> — что программа делает: «можно добавить студента», «показать расписание».</p>
+      <p><b>Нефункциональные требования</b> — какая она должна быть: «работает за 0.5 секунды», «доступна 99.9% времени», «защищена паролем».</p>
+      <p>Новички часто описывают только функциональные — это ошибка. Без нефункциональных требований программа может работать, но быть медленной или уязвимой.</p>`,
+    type: 'multi',
+    question: 'Отметь ВСЕ нефункциональные требования (можно выбрать несколько).',
+    options: [
+      'Пользователь может восстановить пароль',
+      'Сайт открывается за 1 секунду',
+      'Есть кнопка «Выход»',
+      'Система доступна 99.9% времени',
+      'Можно добавить студента в группу'
+    ],
+    correctSet: [1, 3],
+    explanation: 'Нефункциональные требования — про качество работы (скорость, надёжность, безопасность), а не про конкретные функции. «Открывается за 1 секунду» и «доступна 99.9% времени» — это качество.'
+  },
+  // ===== 5. МНОЖЕСТВЕННЫЙ: плюсы десктопа =====
+  {
+    tag: 'Десктоп', tagClass: 'web',
+    theory: `<h3>Что такое десктопное приложение</h3>
+      <p><b>Десктопное</b> приложение устанавливается <b>на компьютер пользователя</b> (Windows, macOS, Linux).</p>
+      <p>Примеры: Word, Excel, Photoshop, Telegram Desktop, VS Code.</p>
+      <p><b>Плюсы:</b> работает без интернета, использует все ресурсы компьютера, быстрый отклик, доступ к файлам напрямую.</p>
+      <p><b>Минусы:</b> нужно устанавливать на каждый компьютер, обновлять вручную, разные версии для разных ОС.</p>`,
+    type: 'multi',
+    question: 'Отметь ВСЕ плюсы десктопного приложения.',
+    options: [
+      'Работает без интернета',
+      'Ничего не нужно устанавливать',
+      'Использует все ресурсы компьютера',
+      'Обновления приходят сразу всем пользователям',
+      'Быстрый отклик интерфейса'
+    ],
+    correctSet: [0, 2, 4],
+    explanation: 'Плюсы десктопа — независимость от сети, доступ к ресурсам ПК и быстрый интерфейс. Установка нужна — это минус. Мгновенные обновления для всех — плюс веба.'
+  },
+  // ===== 6. МНОЖЕСТВЕННЫЙ: минусы веба =====
+  {
+    tag: 'Веб', tagClass: 'web',
+    theory: `<h3>Что такое веб-приложение</h3>
+      <p><b>Веб-приложение</b> работает <b>в браузере</b>. Пользователь открывает ссылку и сразу пользуется.</p>
+      <p>Примеры: Google Docs, Gmail, ВКонтакте, Notion, онлайн-банк.</p>
+      <p><b>Плюсы:</b> ничего устанавливать не надо, доступ с любого устройства, обновления мгновенно для всех, единая версия для всех ОС.</p>
+      <p><b>Минусы:</b> нужен интернет, ограничен доступ к ресурсам компьютера, данные на сервере, а не у пользователя.</p>`,
+    type: 'multi',
+    question: 'Отметь ВСЕ минусы веб-приложения.',
+    options: [
+      'Нужен интернет',
+      'Нужно устанавливать на каждый компьютер',
+      'Ограниченный доступ к ресурсам компьютера',
+      'Данные хранятся на сервере, а не у пользователя',
+      'Разные версии для разных ОС'
+    ],
+    correctSet: [0, 2, 3],
+    explanation: 'Минусы веба — зависимость от сети, ограничения по ресурсам и хранение данных на сервере. Установка не нужна (это плюс). Разные версии для ОС — проблема десктопа, у веба одна версия для всех.'
+  },
+  // ===== 7. СОПОСТАВЛЕНИЕ: веб vs десктоп =====
+  {
+    tag: 'Веб vs Десктоп', tagClass: 'web',
+    theory: `<h3>Сравнение веб и десктоп</h3>
+      <p>Критерии: установка, обновления, интернет, ресурсы, кроссплатформенность, безопасность данных.</p>
+      <p>Часто выбирают <b>гибрид</b>: десктоп с веб-версией (Telegram, Slack, Discord).</p>
+      <p>В учебных проектах проще <b>веб</b>: не надо собирать установщик и поддерживать разные ОС.</p>`,
+    type: 'match',
+    question: 'Сопоставь характеристику с типом приложения.',
+    left: [
+      'Нужно устанавливать на компьютер',
+      'Работает в браузере по ссылке',
+      'Обновления приходят мгновенно всем',
+      'Может работать без интернета',
+      'Одна версия для всех ОС',
+      'Использует всю мощность компьютера'
+    ],
+    right: ['Десктоп', 'Веб', 'Веб', 'Десктоп', 'Веб', 'Десктоп'],
+    explanation: 'Каждая характеристика — следствие архитектуры. Десктоп живёт на компьютере, веб — на сервере и открывается в браузере. Мгновенные обновления и единая версия — сильные стороны веба.'
+  },
+  // ===== 8. ПОРЯДОК: путь запроса =====
+  {
+    tag: 'Веб-приложение', tagClass: 'web',
+    theory: `<h3>Из чего состоит веб-приложение</h3>
+      <p><b>Фронтенд</b> — то, что видит пользователь (HTML + CSS + JavaScript в браузере).</p>
+      <p><b>Бэкенд</b> — серверная часть (Node.js, PHP, Python). Обрабатывает запросы, работает с БД.</p>
+      <p><b>База данных</b> — где хранятся данные.</p>
+      <p>Схема: <b>Браузер → Сервер → БД</b>. Общение фронтенда и бэкенда — через API (HTTP-запросы, JSON).</p>`,
+    type: 'order',
+    question: 'Расставь, как проходит запрос в веб-приложении. Кликайте элементы в правильном порядке.',
+    items: [
+      'Пользователь нажимает кнопку в браузере',
+      'Браузер отправляет HTTP-запрос на сервер',
+      'Сервер обрабатывает запрос',
+      'Сервер обращается к базе данных',
+      'БД возвращает данные серверу',
+      'Сервер отправляет ответ в браузер',
+      'Браузер показывает результат пользователю'
+    ],
+    correctOrder: [0, 1, 2, 3, 4, 5, 6],
+    explanation: 'Фронтенд (браузер) и бэкенд (сервер) — две части одного процесса. База данных — отдельный слой, к которому обращается только сервер. Браузер никогда не ходит в БД напрямую.'
+  },
+  // ===== 9. ВЫБОР: чем БД отличается от файла =====
+  {
+    tag: 'База данных', tagClass: 'db',
+    theory: `<h3>Что такое база данных</h3>
+      <p><b>БД</b> — организованное хранилище данных, к которому можно быстро обращаться. Пример: список студентов колледжа — имя, группа, оценки.</p>
+      <p>БД отличается от файла (Excel) тем, что <b>структурирована</b> и <b>управляема</b>: можно быстро найти, отфильтровать, изменить, при этом данные не «рассыпаются».</p>
+      <p>В реальных приложениях БД почти всегда есть: без неё данные пропадут при перезапуске программы.</p>`,
+    type: 'single',
+    question: 'Чем база данных отличается от обычного файла (например, Excel)?',
+    options: [
+      'Она красивее выглядит',
+      'Данные структурированы и управляемы — можно быстро искать и изменять',
+      'Она всегда меньше по размеру'
+    ],
+    correct: 1,
+    explanation: 'Файл — просто набор данных. БД — организованное хранилище со структурой, связями и быстрым поиском. Размер и внешний вид не главное; главное — организация и скорость работы.'
+  },
+  // ===== 10. СОПОСТАВЛЕНИЕ: БД, СУБД, SQL =====
+  {
+    tag: 'СУБД и SQL', tagClass: 'db',
+    theory: `<h3>Что такое СУБД и SQL</h3>
+      <p><b>СУБД</b> — программа, через которую мы работаем с базой данных: создаёт таблицы, обеспечивает целостность, управляет доступом.</p>
+      <p>Примеры: <b>PostgreSQL, MySQL, SQLite, Oracle, Microsoft SQL Server</b>. SQLite — лёгкая, вся БД в одном файле. PostgreSQL/MySQL — серверные, для больших систем.</p>
+      <p><b>SQL</b> — декларативный язык запросов к реляционным БД. Вы говорите <b>что</b> нужно, а СУБД решает, <b>как</b> искать.</p>
+      <p>Базовые команды: <code>SELECT</code> (выбрать), <code>INSERT</code> (добавить), <code>UPDATE</code> (изменить), <code>DELETE</code> (удалить).</p>`,
+    type: 'match',
+    question: 'Сопоставь понятие и его суть.',
+    left: ['База данных', 'СУБД', 'SQL', 'SQLite', 'PostgreSQL'],
+    right: [
+      'Организованное хранилище данных',
+      'Программа для работы с БД',
+      'Язык запросов к БД',
+      'Лёгкая СУБД в одном файле',
+      'Серверная СУБД для больших систем'
+    ],
+    explanation: 'БД, СУБД и SQL — три разных понятия, которые часто путают. БД — данные, СУБД — инструмент, SQL — язык. SQLite — конкретная лёгкая СУБД, PostgreSQL — серверная.'
+  },
+  // ===== 11. ВЫБОР: декларативность SQL =====
+  {
+    tag: 'SQL', tagClass: 'db',
+    theory: `<h3>Что такое SQL и почему он декларативный</h3>
+      <p><b>SQL</b> (Structured Query Language) — стандартный язык для работы с реляционными БД.</p>
+      <p><b>Декларативный</b>: вы говорите <b>что</b> нужно («все студенты из Москвы»), а СУБД решает, <b>как</b> это найти.</p>
+      <p>SQL — единый стандарт, но у каждой СУБД есть свои мелкие расширения (диалекты).</p>`,
+    type: 'single',
+    question: 'Что значит «SQL — декларативный язык»?',
+    options: [
+      'Он описывает порядок действий по шагам',
+      'Он описывает, что нужно получить, а как — решает СУБД',
+      'Он работает только с числами'
+    ],
+    correct: 1,
+    explanation: 'В обычном программировании вы пишете алгоритм («сделай шаг 1, шаг 2»). В SQL — «дай мне вот эти данные», а способ поиска выбирает СУБД. Это и есть декларативность.'
+  },
+  // ===== 12. СОПОСТАВЛЕНИЕ: элементы таблицы =====
+  {
+    tag: 'Таблицы', tagClass: 'db',
+    theory: `<h3>Таблицы, строки, столбцы, ключи</h3>
+      <p>Реляционная БД = <b>таблицы</b> со строками и столбцами.</p>
+      <ul>
+        <li><b>Столбец</b> — свойство объекта + тип данных (<code>INT</code>, <code>VARCHAR</code>, <code>DATE</code>).</li>
+        <li><b>Строка</b> — один объект (один студент).</li>
+        <li><b>Первичный ключ</b> — уникальный идентификатор строки (<code>id</code>).</li>
+        <li><b>Внешний ключ</b> — ссылка на строку в другой таблице (например, <code>group_id</code> в расписании указывает на группу).</li>
+      </ul>
+      <p>Внешний ключ нужен, чтобы связать строки двух таблиц и не дублировать данные.</p>`,
+    type: 'match',
+    question: 'Сопоставь элемент таблицы и его описание.',
+    left: ['Столбец', 'Строка', 'Первичный ключ', 'Внешний ключ'],
+    right: [
+      'Свойство объекта с типом данных',
+      'Один объект со всеми значениями',
+      'Уникальный идентификатор строки',
+      'Ссылка на строку в другой таблице'
+    ],
+    explanation: 'Первичный ключ уникален внутри своей таблицы. Внешний ключ создаёт связь между таблицами и не даёт данным дублироваться. Строка — это один объект, столбец — его свойство.'
+  },
+  // ===== 13. ПОРЯДОК: сборка SQL-запроса =====
+  {
+    tag: 'SQL-запросы', tagClass: 'db',
+    theory: `<h3>Базовые SQL-запросы</h3>
+      <p><b>SELECT</b> — что показать, <b>FROM</b> — откуда, <b>WHERE</b> — фильтр строк, <b>ORDER BY</b> — сортировка (<code>ASC</code> / <code>DESC</code>).</p>
+      <p>Пример:</p>
+      <pre><code>SELECT name, age FROM Students WHERE age > 18 ORDER BY age DESC;</code></pre>
+      <p>Порядок частей важен: если перепутать — СУБД выдаст синтаксическую ошибку.</p>
+      <p><b>Важно:</b> в <code>UPDATE</code> и <code>DELETE</code> всегда указывать <code>WHERE</code>, иначе изменится/удалится всё.</p>`,
+    type: 'order',
+    question: 'Собери SQL-запрос: получить имена совершеннолетних студентов по убыванию возраста. Кликайте части в правильном порядке.',
+    items: ['SELECT name', 'FROM Students', 'WHERE age > 18', 'ORDER BY age DESC'],
+    correctOrder: [0, 1, 2, 3],
+    explanation: 'Правильный порядок частей в SELECT-запросе: SELECT → FROM → WHERE → ORDER BY. Если перепутать — СУБД выдаст синтаксическую ошибку.'
+  },
+  // ===== 14. ВЫБОР: почему нельзя напрямую =====
+  {
+    tag: 'Безопасность', tagClass: 'db',
+    theory: `<h3>Как приложение общается с БД</h3>
+      <p>Схема: <b>Браузер → Сервер → БД</b>. Фронтенд <b>никогда</b> не подключается к БД напрямую.</p>
+      <p>Почему: если положить логин и пароль БД в JS-файл, любой откроет DevTools (F12) и увидит их. Сервер принимает запрос, сам обращается к БД и возвращает результат в браузер.</p>
+      <p>В десктопе проще: программа может подключаться к локальной БД (например, SQLite-файлу) напрямую, потому что она не в интернете. Для обучения часто используют <b>SQLite</b>: файл <code>.db</code> рядом с приложением, никакого сервера не нужно.</p>`,
+    type: 'single',
+    question: 'Почему в веб-приложении нельзя подключаться к БД напрямую из браузера?',
+    options: [
+      'Браузер не поддерживает SQL',
+      'Пользователь увидит логин и пароль БД в коде страницы и получит доступ к данным',
+      'Это слишком медленно'
+    ],
+    correct: 1,
+    explanation: 'Клиентский код полностью виден пользователю. Если там хранятся учётные данные БД, злоумышленник получит прямой доступ к базе. Поэтому доступ к БД — только через сервер, который скрывает учётные данные.'
+  }
+];
 
-    let currentImage = null;
-    let currentPadding = 0;
-    let workAreaHeight = 0;
+// ============================================================
+//  ЗАЩИТА ОТ КОПИРОВАНИЯ
+// ============================================================
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => {
+  const tag = e.target.tagName;
+  if (tag !== 'INPUT' && tag !== 'TEXTAREA') e.preventDefault();
+});
+document.addEventListener('cut', e => {
+  const tag = e.target.tagName;
+  if (tag !== 'INPUT' && tag !== 'TEXTAREA') e.preventDefault();
+});
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && ['c','x','a'].includes(e.key.toLowerCase())) {
+    const tag = e.target.tagName;
+    if (tag !== 'INPUT' && tag !== 'TEXTAREA') e.preventDefault();
+  }
+});
 
-    reelsCanvas.width = 1080;
-    reelsCanvas.height = 1920;
+const state = { studentName: '', currentIndex: 0, answers: [] };
+const app = document.getElementById('app');
 
-    // Функция обрезки до 3:4 от центра
-    function cropTo34(img) {
-        const imgRatio = img.width / img.height;
-        const targetRatio = 3 / 4; // 0.75
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-        let sx, sy, sWidth, sHeight;
+function shuffle(arr) {
+  const a = arr.map((v, i) => ({ v, i }));
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
-        if (imgRatio > targetRatio) {
-            // Слишком широкое — обрезаем по бокам
-            sHeight = img.height;
-            sWidth = img.height * targetRatio;
-            sx = (img.width - sWidth) / 2;
-            sy = 0;
-        } else {
-            // Слишком высокое или ровно 3:4 — обрезаем по высоте
-            sWidth = img.width;
-            sHeight = img.width / targetRatio;
-            sx = 0;
-            sy = (img.height - sHeight) / 2;
-        }
-
-        return { sx, sy, sWidth, sHeight };
+// ============================================================
+//  СТАРТ
+// ============================================================
+function renderStart() {
+  app.innerHTML = `
+    <div class="card">
+      <h1>💻 Технология разработки ПО</h1>
+      <p class="subtitle">Интерактивный курс: Технология разработки ПО</p>
+      <div class="start-intro">
+        <b>Наберите 12 баллов для зачёта</b>
+      </div>
+      <input type="text" id="nameInput" placeholder="Ваше имя" maxlength="40" autocomplete="off">
+      <div class="actions">
+        <button class="btn" id="startBtn">Начать обучение →</button>
+      </div>
+    </div>`;
+  const input = document.getElementById('nameInput');
+  const btn = document.getElementById('startBtn');
+  input.focus();
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); });
+  btn.addEventListener('click', () => {
+    const name = input.value.trim();
+    if (name.length < 2) {
+      input.style.borderColor = '#f56565';
+      input.placeholder = 'Введите имя (минимум 2 символа)';
+      return;
     }
+    state.studentName = name;
+    state.currentIndex = 0;
+    state.answers = [];
+    renderTheory();
+  });
+}
 
-    function loadImage(file) {
-        if (!file || !file.type.startsWith('image/')) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                currentImage = img;
-                
-                // Вычисляем высоту рабочей области (3:4 от ширины)
-                const w = reelsCanvas.width;
-                workAreaHeight = w * (4 / 3); // 1080 * 4/3 = 1440
-                
-                renderAll();
-                previewWrapper.classList.add('active');
-                controls.classList.add('active');
-                saveBtn.classList.add('active');
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+// ============================================================
+//  СТРАНИЦА 1: ТЕОРИЯ
+// ============================================================
+function renderTheory() {
+  if (state.currentIndex >= LESSONS.length) { renderFinalTest(); return; }
+  const lesson = LESSONS[state.currentIndex];
+  const progress = (state.currentIndex / (LESSONS.length + 1)) * 100;
+
+  app.innerHTML = `
+    <div class="card">
+      <div class="module-meta">
+        <span class="name-badge">👤 ${escapeHtml(state.studentName)}</span>
+        <span class="module-counter">Модуль ${state.currentIndex + 1} из ${LESSONS.length}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <span class="step-label">Шаг 1 — Теория</span>
+      <span class="tag ${lesson.tagClass}">${lesson.tag}</span>
+      <div class="theory">${lesson.theory}</div>
+      <div class="actions space-between">
+        <button class="btn btn-back" id="backBtn">← Назад</button>
+        <button class="btn" id="toTaskBtn">Перейти к заданию →</button>
+      </div>
+    </div>`;
+
+  document.getElementById('toTaskBtn').addEventListener('click', renderTask);
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    if (state.currentIndex === 0) {
+      // С первого модуля — на стартовый экран
+      state.studentName = '';
+      state.currentIndex = 0;
+      state.answers = [];
+      renderStart();
+    } else {
+      state.currentIndex--;
+      renderTask();
     }
+  });
 
-    function renderReels() {
-        if (!currentImage) return;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-        const w = reelsCanvas.width;
-        const h = reelsCanvas.height;
-        const ctx = reelsCanvas.getContext('2d');
+// ============================================================
+//  СТРАНИЦА 2: ЗАДАНИЕ (по типу)
+// ============================================================
+function renderTask() {
+  const lesson = LESSONS[state.currentIndex];
+  const progress = (state.currentIndex / (LESSONS.length + 1)) * 100;
 
-        ctx.clearRect(0, 0, w, h);
+  app.innerHTML = `
+    <div class="card">
+      <div class="module-meta">
+        <span class="name-badge">👤 ${escapeHtml(state.studentName)}</span>
+        <span class="module-counter">Модуль ${state.currentIndex + 1} из ${LESSONS.length}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <span class="step-label">Шаг 2 — Задание</span>
+      <span class="tag ${lesson.tagClass}">${lesson.tag}</span>
+      <h2>Проверьте себя</h2>
+      <p style="color:#4a5568; margin-bottom:16px; font-size:15px; line-height:1.6;">${escapeHtml(lesson.question)}</p>
+      <div id="taskArea"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="actions space-between">
+        <button class="btn btn-back" id="backBtn">← Назад</button>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button class="btn" id="checkBtn" disabled>Проверить</button>
+          <button class="btn btn-secondary hidden" id="nextBtn">
+            ${state.currentIndex + 1 === LESSONS.length ? 'К итоговому тесту →' : 'Далее →'}
+          </button>
+        </div>
+      </div>
+    </div>`;
 
-        const paddingPercent = currentPadding / 100;
-        
-        // Обрезаем до 3:4 от центра
-        const crop = cropTo34(currentImage);
-        
-        // Размер фото внутри рабочей области с отступом
-        const photoWidth = w * (1 - paddingPercent * 2);
-        const photoHeight = photoWidth * (4 / 3); // 3:4
+  const taskArea = document.getElementById('taskArea');
+  const checkBtn = document.getElementById('checkBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const feedback = document.getElementById('feedback');
 
-        // Центрируем фото в рабочей области
-        const x = (w - photoWidth) / 2;
-        const y = (workAreaHeight - photoHeight) / 2;
+  document.getElementById('backBtn').addEventListener('click', () => {
+    // Назад со страницы задания — всегда к теории текущего модуля
+    // (для первого модуля это тоже корректно: вернёт к теории 1-го модуля)
+    renderTheory();
+  });
 
-        // 1. Рисуем серую фиксированную область (нижняя часть)
-        ctx.fillStyle = '#555555';
-        ctx.fillRect(0, workAreaHeight, w, h - workAreaHeight);
+  let checkFn;
+  if (lesson.type === 'single') checkFn = setupSingle(lesson, taskArea, checkBtn);
+  else if (lesson.type === 'multi') checkFn = setupMulti(lesson, taskArea, checkBtn);
+  else if (lesson.type === 'order') checkFn = setupOrder(lesson, taskArea, checkBtn);
+  else if (lesson.type === 'match') checkFn = setupMatch(lesson, taskArea, checkBtn);
 
-        // 2. Рисуем зелёную рабочую область (фон)
-        ctx.fillStyle = '#2d7d3a';
-        ctx.fillRect(0, 0, w, workAreaHeight);
+  checkBtn.addEventListener('click', () => {
+    const result = checkFn();
+    state.answers.push({ lessonIndex: state.currentIndex, result });
+    showFeedback(feedback, result, lesson);
+    checkBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+    nextBtn.focus();
+  });
 
-        // 3. Рисуем белый фон внутри рабочей области (там где отступ)
-        ctx.fillStyle = '#ffffff';
-        
-        if (y > 0) {
-            ctx.fillRect(0, 0, w, y);
-        }
-        if (x > 0) {
-            ctx.fillRect(0, y, x, photoHeight);
-        }
-        if (x + photoWidth < w) {
-            ctx.fillRect(x + photoWidth, y, w - x - photoWidth, photoHeight);
-        }
-        if (y + photoHeight < workAreaHeight) {
-            ctx.fillRect(0, y + photoHeight, w, workAreaHeight - y - photoHeight);
-        }
+  nextBtn.addEventListener('click', () => {
+    state.currentIndex++;
+    renderTheory();
+  });
 
-        // 4. Рисуем обрезанное фото (3:4) поверх белого фона
-        ctx.drawImage(
-            currentImage,
-            crop.sx, crop.sy, crop.sWidth, crop.sHeight,  // источник (обрезанный кадр)
-            x, y, photoWidth, photoHeight                 // назначение
-        );
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-        // 5. Рисуем разделительную линию
-        ctx.strokeStyle = '#888888';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 4]);
-        ctx.beginPath();
-        ctx.moveTo(0, workAreaHeight);
-        ctx.lineTo(w, workAreaHeight);
-        ctx.stroke();
-        ctx.setLineDash([]);
+// ============================================================
+//  ТИП 1: ВЫБОР ОДНОГО
+// ============================================================
+function setupSingle(lesson, taskArea, checkBtn) {
+  let selected = null;
+  let locked = false;
+  taskArea.innerHTML = lesson.options.map((opt, i) =>
+    `<label class="option" data-index="${i}">${escapeHtml(opt)}</label>`
+  ).join('');
 
-        // 6. Подписи
-        ctx.fillStyle = '#999999';
-        ctx.font = `${w * 0.035}px system-ui, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('⬇ фиксировано', w/2, workAreaHeight + (h - workAreaHeight) / 2);
+  const options = taskArea.querySelectorAll('.option');
+  options.forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (locked) return;
+      options.forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      selected = parseInt(opt.dataset.index);
+      checkBtn.disabled = false;
+    });
+  });
 
-        ctx.fillStyle = '#ffffff';
-        ctx.font = `${w * 0.03}px system-ui, sans-serif`;
-        ctx.fillText('3:4 (обрезано от центра)', w/2, workAreaHeight / 2);
-    }
+  return () => {
+    locked = true;
+    const correct = selected === lesson.correct;
+    options.forEach((opt, i) => {
+      opt.classList.add('locked');
+      if (i === lesson.correct) opt.classList.add('correct');
+      else if (i === selected) opt.classList.add('wrong');
+    });
+    return { correct, detail: correct ? '' : `Правильный ответ: ${lesson.options[lesson.correct]}` };
+  };
+}
 
-    function renderAll() {
-        renderReels();
-    }
+// ============================================================
+//  ТИП 2: МНОЖЕСТВЕННЫЙ ВЫБОР
+// ============================================================
+function setupMulti(lesson, taskArea, checkBtn) {
+  let selected = new Set();
+  let locked = false;
+  taskArea.innerHTML = lesson.options.map((opt, i) =>
+    `<label class="option" data-index="${i}"><span class="check"></span>${escapeHtml(opt)}</label>`
+  ).join('');
 
-    function saveReels() {
-        if (!currentImage) return;
+  const options = taskArea.querySelectorAll('.option');
+  options.forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (locked) return;
+      const i = parseInt(opt.dataset.index);
+      if (selected.has(i)) { selected.delete(i); opt.classList.remove('selected'); }
+      else { selected.add(i); opt.classList.add('selected'); }
+      checkBtn.disabled = selected.size === 0;
+    });
+  });
 
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = reelsCanvas.width;
-        tempCanvas.height = reelsCanvas.height;
-        const tempCtx = tempCanvas.getContext('2d');
+  return () => {
+    locked = true;
+    const correctSet = new Set(lesson.correctSet);
+    let correct = true;
+    options.forEach((opt, i) => {
+      opt.classList.add('locked');
+      const isCorrect = correctSet.has(i);
+      const isSelected = selected.has(i);
+      if (isCorrect) opt.classList.add('correct');
+      if (!isCorrect && isSelected) { opt.classList.add('wrong'); correct = false; }
+      if (isCorrect && !isSelected) correct = false;
+    });
+    const correctText = lesson.correctSet.map(i => lesson.options[i]).join('; ');
+    return { correct, detail: correct ? '' : `Правильные варианты: ${correctText}` };
+  };
+}
 
-        const w = tempCanvas.width;
-        const h = tempCanvas.height;
+// ============================================================
+//  ТИП 3: ПОРЯДОК
+// ============================================================
+function setupOrder(lesson, taskArea, checkBtn) {
+  const shuffled = shuffle(lesson.items);
+  let chain = [];
+  let locked = false;
 
-        // Весь canvas заливаем белым
-        tempCtx.fillStyle = '#ffffff';
-        tempCtx.fillRect(0, 0, w, h);
+  taskArea.innerHTML = `
+    <div class="order-chain" id="chain"></div>
+    <div class="order-pool" id="pool"></div>
+    <button class="btn btn-secondary" id="resetOrder" style="margin-top:8px; font-size:14px; padding:8px 16px;">↺ Начать заново</button>
+  `;
 
-        const paddingPercent = currentPadding / 100;
-        const crop = cropTo34(currentImage);
-        
-        const photoWidth = w * (1 - paddingPercent * 2);
-        const photoHeight = photoWidth * (4 / 3);
-        const x = (w - photoWidth) / 2;
-        const y = (workAreaHeight - photoHeight) / 2;
+  const chainEl = document.getElementById('chain');
+  const poolEl = document.getElementById('pool');
+  const resetBtn = document.getElementById('resetOrder');
 
-        tempCtx.drawImage(
-            currentImage,
-            crop.sx, crop.sy, crop.sWidth, crop.sHeight,
-            x, y, photoWidth, photoHeight
-        );
+  function draw() {
+    chainEl.innerHTML = chain.map((idx, pos) =>
+      `<div class="order-item in-chain"><span class="num">${pos + 1}</span>${escapeHtml(lesson.items[idx])}</div>`
+    ).join('');
+    poolEl.innerHTML = shuffled
+      .filter(s => !chain.includes(s.i))
+      .map(s => `<div class="order-item" data-idx="${s.i}">${escapeHtml(s.v)}</div>`)
+      .join('');
+    poolEl.querySelectorAll('.order-item').forEach(el => {
+      el.addEventListener('click', () => {
+        if (locked) return;
+        chain.push(parseInt(el.dataset.idx));
+        checkBtn.disabled = chain.length !== lesson.items.length;
+        draw();
+      });
+    });
+  }
 
-        const link = document.createElement('a');
-        link.download = 'instagram-reels-9x16.png';
-        link.href = tempCanvas.toDataURL('image/png');
-        link.click();
-    }
+  resetBtn.addEventListener('click', () => {
+    if (locked) return;
+    chain = [];
+    checkBtn.disabled = true;
+    draw();
+  });
 
-    paddingBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            paddingBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentPadding = parseInt(btn.dataset.padding);
-            renderAll();
+  draw();
+
+  return () => {
+    locked = true;
+    resetBtn.style.display = 'none';
+    let correct = true;
+    chainEl.innerHTML = chain.map((idx, pos) => {
+      const ok = lesson.correctOrder[pos] === idx;
+      if (!ok) correct = false;
+      return `<div class="order-item ${ok ? 'correct-chain' : 'wrong-chain'}"><span class="num">${pos + 1}</span>${escapeHtml(lesson.items[idx])}</div>`;
+    }).join('');
+    poolEl.innerHTML = '';
+    return { correct, detail: correct ? '' : `Правильный порядок: ${lesson.correctOrder.map(i => lesson.items[i]).join(' → ')}` };
+  };
+}
+
+// ============================================================
+//  ТИП 4: СОПОСТАВЛЕНИЕ
+// ============================================================
+function setupMatch(lesson, taskArea, checkBtn) {
+  const rightShuffled = shuffle(lesson.right);
+  let activeLeft = null;
+  let pairs = {};
+  let locked = false;
+
+  taskArea.innerHTML = `
+    <div class="match-grid">
+      <div class="match-col" id="leftCol"></div>
+      <div class="match-col" id="rightCol"></div>
+    </div>
+  `;
+  const leftCol = document.getElementById('leftCol');
+  const rightCol = document.getElementById('rightCol');
+
+  function draw() {
+    leftCol.innerHTML = lesson.left.map((txt, i) => {
+      const pairNum = pairs[i] !== undefined ? Object.keys(pairs).indexOf(String(i)) + 1 : null;
+      const label = pairs[i] !== undefined ? `<span class="pair-label">${pairNum}</span>` : '';
+      const cls = pairs[i] !== undefined ? 'matched' : (activeLeft === i ? 'active' : '');
+      return `<div class="match-item ${cls}" data-side="left" data-idx="${i}">${label}${escapeHtml(txt)}</div>`;
+    }).join('');
+
+    rightCol.innerHTML = rightShuffled.map(s => {
+      const matchedLeft = Object.keys(pairs).find(k => pairs[k] === s.i);
+      const pairNum = matchedLeft !== undefined ? Object.keys(pairs).indexOf(matchedLeft) + 1 : null;
+      const label = pairNum ? `<span class="pair-label">${pairNum}</span>` : '';
+      const cls = pairNum ? 'matched' : '';
+      return `<div class="match-item ${cls}" data-side="right" data-orig="${s.i}">${label}${escapeHtml(s.v)}</div>`;
+    }).join('');
+
+    leftCol.querySelectorAll('.match-item').forEach(el => {
+      el.addEventListener('click', () => {
+        if (locked || el.classList.contains('matched')) return;
+        activeLeft = parseInt(el.dataset.idx);
+        draw();
+      });
+    });
+    rightCol.querySelectorAll('.match-item').forEach(el => {
+      el.addEventListener('click', () => {
+        if (locked || el.classList.contains('matched')) return;
+        if (activeLeft === null) return;
+        pairs[activeLeft] = parseInt(el.dataset.orig);
+        activeLeft = null;
+        checkBtn.disabled = Object.keys(pairs).length !== lesson.left.length;
+        draw();
+      });
+    });
+  }
+
+  draw();
+
+  return () => {
+    locked = true;
+    let correct = true;
+    Object.keys(pairs).forEach(k => {
+      const leftIdx = parseInt(k);
+      const rightIdx = pairs[k];
+      if (leftIdx !== rightIdx) correct = false;
+    });
+
+    leftCol.innerHTML = lesson.left.map((txt, i) => {
+      const ok = pairs[i] === i;
+      return `<div class="match-item ${ok ? 'correct-match' : 'wrong-match'}"><span class="pair-label">${ok ? '✓' : '✗'}</span>${escapeHtml(txt)}</div>`;
+    }).join('');
+
+    rightCol.innerHTML = rightShuffled.map(s => {
+      const matchedLeft = Object.keys(pairs).find(k => pairs[k] === s.i);
+      const ok = matchedLeft !== undefined && parseInt(matchedLeft) === s.i;
+      return `<div class="match-item ${ok ? 'correct-match' : 'wrong-match'}">${escapeHtml(s.v)}</div>`;
+    }).join('');
+
+    return { correct, detail: correct ? '' : 'Некоторые пары составлены неверно. Правильные пары: ' + lesson.left.map((l, i) => `${l} → ${lesson.right[i]}`).join('; ') };
+  };
+}
+
+// ============================================================
+//  ПОКАЗ ОТВЕТА
+// ============================================================
+function showFeedback(feedbackEl, result, lesson) {
+  const cls = result.correct ? 'success' : 'error';
+  feedbackEl.className = 'feedback show ' + cls;
+  feedbackEl.innerHTML = `
+    <span class="fb-title">${result.correct ? '✅ Верно!' : '❌ Неверно'}</span>
+    ${result.detail ? escapeHtml(result.detail) + '<br><br>' : ''}
+    <b>Почему:</b> ${escapeHtml(lesson.explanation)}
+  `;
+}
+
+// ============================================================
+//  ИТОГОВЫЙ ТЕСТ (без кнопки "Назад")
+// ============================================================
+function renderFinalTest() {
+  const progress = (LESSONS.length / (LESSONS.length + 1)) * 100;
+
+  app.innerHTML = `
+    <div class="card">
+      <div class="module-meta">
+        <span class="name-badge">👤 ${escapeHtml(state.studentName)}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <h1>🎓 Итоговый тест</h1>
+      <p class="subtitle">Все темы курса. Кнопка «Завершить» станет активной, когда вы ответите на все вопросы. Задания сохраняют свой тип (выбор, порядок, сопоставление, множественный выбор).</p>
+      <div id="testArea"></div>
+      <div class="actions">
+        <button class="btn" id="submitTest" disabled>Завершить тест</button>
+      </div>
+    </div>`;
+
+  const testArea = document.getElementById('testArea');
+  const submitBtn = document.getElementById('submitTest');
+
+  const testState = LESSONS.map((lesson, idx) => ({ idx, answered: false, result: null }));
+
+  testArea.innerHTML = LESSONS.map((lesson, idx) => `
+    <div style="margin-bottom:30px; padding-bottom:20px; border-bottom:1px solid #e2e8f0;" data-q="${idx}">
+      <div class="review-question">${idx + 1}. ${escapeHtml(lesson.question)}</div>
+      <div id="testTask${idx}"></div>
+    </div>
+  `).join('');
+
+  LESSONS.forEach((lesson, idx) => {
+    const container = document.getElementById(`testTask${idx}`);
+    const onAnswer = () => {
+      testState[idx].answered = true;
+      submitBtn.disabled = !testState.every(t => t.answered);
+    };
+
+    if (lesson.type === 'single') {
+      let selected = null;
+      container.innerHTML = lesson.options.map((o, i) =>
+        `<label class="option" data-index="${i}">${escapeHtml(o)}</label>`
+      ).join('');
+      const opts = container.querySelectorAll('.option');
+      opts.forEach(opt => {
+        opt.addEventListener('click', () => {
+          opts.forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          selected = parseInt(opt.dataset.index);
+          testState[idx].result = { correct: selected === lesson.correct };
+          onAnswer();
         });
-    });
+      });
+    } else if (lesson.type === 'multi') {
+      const sel = new Set();
+      container.innerHTML = lesson.options.map((o, i) =>
+        `<label class="option" data-index="${i}"><span class="check"></span>${escapeHtml(o)}</label>`
+      ).join('');
+      const opts = container.querySelectorAll('.option');
+      opts.forEach(opt => {
+        opt.addEventListener('click', () => {
+          const i = parseInt(opt.dataset.index);
+          if (sel.has(i)) { sel.delete(i); opt.classList.remove('selected'); }
+          else { sel.add(i); opt.classList.add('selected'); }
+          const correctSet = new Set(lesson.correctSet);
+          let correct = sel.size === correctSet.size && [...sel].every(i => correctSet.has(i));
+          testState[idx].result = { correct };
+          testState[idx].answered = sel.size > 0;
+          submitBtn.disabled = !testState.every(t => t.answered);
+        });
+      });
+    } else if (lesson.type === 'order') {
+      const shuffled = shuffle(lesson.items);
+      let chain = [];
+      container.innerHTML = `
+        <div class="order-chain" id="fChain${idx}"></div>
+        <div class="order-pool" id="fPool${idx}"></div>
+      `;
+      const chainEl = document.getElementById(`fChain${idx}`);
+      const poolEl = document.getElementById(`fPool${idx}`);
+      function drawF() {
+        chainEl.innerHTML = chain.map((i, pos) =>
+          `<div class="order-item in-chain"><span class="num">${pos + 1}</span>${escapeHtml(lesson.items[i])}</div>`
+        ).join('');
+        poolEl.innerHTML = shuffled.filter(s => !chain.includes(s.i))
+          .map(s => `<div class="order-item" data-idx="${s.i}">${escapeHtml(s.v)}</div>`).join('');
+        poolEl.querySelectorAll('.order-item').forEach(el => {
+          el.addEventListener('click', () => {
+            chain.push(parseInt(el.dataset.idx));
+            if (chain.length === lesson.items.length) {
+              let correct = chain.every((v, i) => v === lesson.correctOrder[i]);
+              testState[idx].result = { correct };
+              testState[idx].answered = true;
+              submitBtn.disabled = !testState.every(t => t.answered);
+            }
+            drawF();
+          });
+        });
+      }
+      drawF();
+    } else if (lesson.type === 'match') {
+      const rightShuffled = shuffle(lesson.right);
+      let pairs = {};
+      let activeLeft = null;
+      container.innerHTML = `
+        <div class="match-grid">
+          <div class="match-col" id="fL${idx}"></div>
+          <div class="match-col" id="fR${idx}"></div>
+        </div>
+      `;
+      const lCol = document.getElementById(`fL${idx}`);
+      const rCol = document.getElementById(`fR${idx}`);
+      function drawM() {
+        lCol.innerHTML = lesson.left.map((txt, i) => {
+          const matched = pairs[i] !== undefined;
+          const num = matched ? Object.keys(pairs).indexOf(String(i)) + 1 : null;
+          const label = matched ? `<span class="pair-label">${num}</span>` : '';
+          return `<div class="match-item ${matched ? 'matched' : (activeLeft === i ? 'active' : '')}" data-side="left" data-idx="${i}">${label}${escapeHtml(txt)}</div>`;
+        }).join('');
+        rCol.innerHTML = rightShuffled.map(s => {
+          const matched = Object.values(pairs).includes(s.i);
+          const num = matched ? Object.keys(pairs).find(k => pairs[k] === s.i) : null;
+          const label = matched ? `<span class="pair-label">${Object.keys(pairs).indexOf(num) + 1}</span>` : '';
+          return `<div class="match-item ${matched ? 'matched' : ''}" data-side="right" data-orig="${s.i}">${label}${escapeHtml(s.v)}</div>`;
+        }).join('');
 
-    uploadBtn.addEventListener('click', () => fileInput.click());
+        lCol.querySelectorAll('.match-item').forEach(el => {
+          el.addEventListener('click', () => {
+            if (el.classList.contains('matched')) return;
+            activeLeft = parseInt(el.dataset.idx);
+            drawM();
+          });
+        });
+        rCol.querySelectorAll('.match-item').forEach(el => {
+          el.addEventListener('click', () => {
+            if (el.classList.contains('matched') || activeLeft === null) return;
+            pairs[activeLeft] = parseInt(el.dataset.orig);
+            activeLeft = null;
+            if (Object.keys(pairs).length === lesson.left.length) {
+              let correct = Object.keys(pairs).every(k => pairs[k] === parseInt(k));
+              testState[idx].result = { correct };
+              testState[idx].answered = true;
+              submitBtn.disabled = !testState.every(t => t.answered);
+            }
+            drawM();
+          });
+        });
+      }
+      drawM();
+    }
+  });
 
-    uploadBtn.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadBtn.style.borderColor = '#0095f6';
-        uploadBtn.style.background = '#f0f8ff';
-    });
-    uploadBtn.addEventListener('dragleave', () => {
-        uploadBtn.style.borderColor = '#ddd';
-        uploadBtn.style.background = '#fafafa';
-    });
-    uploadBtn.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadBtn.style.borderColor = '#ddd';
-        uploadBtn.style.background = '#fafafa';
-        if (e.dataTransfer.files.length) {
-            loadImage(e.dataTransfer.files[0]);
-        }
-    });
+  submitBtn.addEventListener('click', () => renderResults(testState));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length) {
-            loadImage(e.target.files[0]);
-        }
-        e.target.value = '';
-    });
+// ============================================================
+//  РЕЗУЛЬТАТЫ
+// ============================================================
+function renderResults(testState) {
+  let correctCount = 0;
+  testState.forEach(t => { if (t.result && t.result.correct) correctCount++; });
+  const total = LESSONS.length;
+  const percent = Math.round((correctCount / total) * 100);
 
-    saveBtn.addEventListener('click', saveReels);
+  const savedResults = JSON.parse(localStorage.getItem('dev_results') || '[]');
+  savedResults.push({ name: state.studentName, score: correctCount, total, percent, date: new Date().toISOString() });
+  localStorage.setItem('dev_results', JSON.stringify(savedResults));
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="name-badge">👤 ${escapeHtml(state.studentName)}</span>
+      <div class="score-big">
+        <div class="value">${percent}%</div>
+        <div class="label">${correctCount} из ${total} правильных ответов</div>
+      </div>
+      <div class="results-grid">
+        <div class="stat"><div class="stat-value">${correctCount}</div><div class="stat-label">Верно</div></div>
+        <div class="stat"><div class="stat-value">${total - correctCount}</div><div class="stat-label">Ошибок</div></div>
+        <div class="stat"><div class="stat-value">${total}</div><div class="stat-label">Всего заданий</div></div>
+      </div>
+      <h2>📋 Разбор ответов</h2>
+      ${LESSONS.map((lesson, i) => {
+        const ok = testState[i].result && testState[i].result.correct;
+        return `
+          <div class="review-item ${ok ? 'correct-item' : 'wrong-item'}">
+            <div class="review-question">${ok ? '✅' : '❌'} ${i + 1}. ${escapeHtml(lesson.question)}</div>
+            <div class="review-explain"><b>Пояснение:</b> ${escapeHtml(lesson.explanation)}</div>
+          </div>`;
+      }).join('')}
+      <div class="actions">
+        <button class="btn btn-secondary" id="restartBtn">Пройти заново</button>
+      </div>
+    </div>`;
+
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    state.studentName = '';
+    state.currentIndex = 0;
+    state.answers = [];
+    renderStart();
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+renderStart();
 </script>
-
 </body>
 </html>
